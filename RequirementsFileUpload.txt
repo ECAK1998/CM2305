@@ -1,0 +1,16 @@
+File Upload Requirements
+
+Student login: c0000000
+Student password: acb
+
+Lecturer login: l0000000
+Lecturer password: acb
+
+Moderator login: m0000000
+Moderator password: acb
+
+Pdf file to upload
+
+All php/css files must be put on a server (project/local)
+Files must be in repositery containing 3 repositories "upload", "approved", "rejected"
+

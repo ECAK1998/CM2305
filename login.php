@@ -48,19 +48,38 @@ while (True) {
 	break;
 }
 
-if ($access_type == 1) { #STUDENT
+if ($access_type == 1) { #STUDENTS
 	#VIEW TASK FILES/GROUP FILES and UI	
+		echo "<br><br>Approved Files:</br>";
+	$entries = array();
+	$handle = opendir('approved/');
+	if ($handle = opendir('approved/')) {
+    	while (false !== ($entry = readdir($handle))) {
+        	if ($entry != "." && $entry != ".." && $entry != ".DS_Store") {
+        		array_push($entries, $entry);
+        	}
+    	}
+    	closedir($handle);
+    	sort($entries);
+    	foreach ($entries as $e) { 
+    		echo "<br><a href='download.php?file=".$e."'>".$e."</a>";  #OPEN/DOWLOAD FILES $e = filename
+    	}
+	}
 }
 
 if ($access_type == 2) { #LECTURER
 	#UPLOAD PROPOSAL FILES
+	#if (file_exists($_POST["name"].'/') != True) { //CREATE A UNIQUE FOLDER FOR FIRST TIME LOGIN IN
+	#	mkdir($_POST["name"]);
+	#	echo "Personal folder created (for first time users only).";
+	#}
 	echo "<form action='upload.php' method='post' enctype='multipart/form-data'>";
-    echo    "<h2>Upload File</h2>";
-    echo    "<label for='fileSelect'>Filename:</label>";
-    echo    "<input type='file' name='file' id='fileSelect'></br>";
-    echo    "<input type='hidden' value=".$_POST["name"]." name='name'/>";
-    echo    "<input type='hidden' value=".$_POST["password"]." name='password'/>";
-    echo    "<input type='submit' name='submit' value='Upload'>";
+    echo "<h2>Upload File</h2>";
+    echo "<label for='fileSelect'>Filename:</label>";
+    echo "<input type='file' name='file' id='fileSelect'></br>";
+    echo "<input type='hidden' value=".$_POST["name"]." name='name'/>";
+    echo "<input type='hidden' value=".$_POST["password"]." name='password'/>";
+    echo "<input type='submit' name='submit' value='Upload'>";
     echo "</form>";
 	#EDIT AND RESUBMIT REJECTED FILES
 
@@ -82,14 +101,14 @@ if ($access_type == 3) { #MODERATOR
     	closedir($handle);
     	sort($entries);
     	foreach ($entries as $e) { 
-    		echo "<a href='download.php?file=".$e."'>".$e."</a>"; #OPEN/DOWLOAD FILES $e = filename
+    		echo "<br><a href='download.php?file=".$e."'>".$e."</a>"; #OPEN/DOWLOAD FILES $e = filename
     		echo "<form action='upload.php' method='post' enctype='multipart/form-data' style='display: inline;'></br>";
     		echo    "<input type='hidden' name='file' value='".$e."'>";
     		echo    "<input type='hidden' value=".$_POST["name"]." name='name'>";
     		echo    "<input type='hidden' value=".$_POST["password"]." name='password'>";
     		echo    "<input type='submit' name='submit' value='Approve'>";
-    		echo    "<input type='submit' name='submit' value='Reject'>";
-    		echo "</form>";
+    		echo    "<input type='submit' name='submit' value='Reject'>"; 
+    		echo "</form></br>";
     	}
 	}
 	echo "<br><br>Approved Files:</br>";
@@ -127,14 +146,14 @@ if ($access_type == 3) { #MODERATOR
     	closedir($handle);
     	sort($entries);
 	    foreach ($entries as $e) { 
-	    	echo "<a href='download.php?file=".$e."'>".$e."</a>";
-	   		echo "<form action='upload.php' method='post' enctype='multipart/form-data'>  ";
-	   		echo    "<input type='hidden' name='file' value='".$e."'>";
-	   		echo    "<input type='hidden' name='folder' value='rejected/'>";
-	   		echo    "<input type='hidden' value=".$_POST["name"]." name='name'>";
-	  		echo    "<input type='hidden' value=".$_POST["password"]." name='password'>";
-	  		echo    "<input type='submit' name='submit' value='Delete'>";
-	    	echo "</form></br>";	
+	    	echo "<br><a href='download.php?file=".$e."'>".$e."</a>";  #OPEN/DOWLOAD FILES $e = filename
+    		echo "<form action='upload.php' method='post' enctype='multipart/form-data' style='display: inline;'>  ";
+    		echo    "<input type='hidden' name='file' value='".$e."'>";
+    		echo    "<input type='hidden' name='folder' value='rejected/'>";
+    		echo    "<input type='hidden' value=".$_POST["name"]." name='name'>";
+    		echo    "<input type='hidden' value=".$_POST["password"]." name='password'>";
+    		echo    "<input type='submit' name='submit' value='Delete'>";
+    		echo "</form>"; 	
 	    }
 	}
 	#SORT UPLOADED FILES
@@ -144,7 +163,7 @@ if ($access_type == 3) { #MODERATOR
 if ($access_type > 0) {
 	echo "</br></br></br>";
 	echo "<form action='SignIn.php'method='post'>";
-	echo "<input type='submit' name='name' value='Log Out'><br>";
+	echo "<input type='submit' value='Log Out'><br>";
 	echo "</form>";
 }
 

@@ -22,9 +22,22 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 // Check whether file exists before uploading it
                 if(file_exists("upload/" . $_FILES["file"]["name"])){
                     echo $_FILES["file"]["name"] . " is already uploaded.";
+                    move_uploaded_file($_FILES["file"]["tmp_name"], "upload/" . $_FILES["file"]["name"]);
                 }
                 else if(file_exists("approved/" . $_FILES["file"]["name"])){
-                    echo $_FILES["file"]["name"] . " is already uploaded and approved.";
+                    echo $_FILES["file"]["name"] . " is already uploaded and approved. Version incremented";
+                    $ext = pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
+                    $temp = $_FILES["file"]["name"];
+                    $temp = str_replace(".".$ext, "", $temp);
+                    $i = 1;
+                    $temp = $temp."_(V".$i.").".$ext;
+                    while (file_exists("approved/".$temp)) {
+                        $temp = str_replace("_(V".$i.").".$ext, "", $temp);
+                        $i += 1;
+                        $temp = $temp."_(V".$i.").".$ext;
+                    }
+                    move_uploaded_file($_FILES["file"]["tmp_name"], "upload/" . $_FILES["file"]["name"]);
+                    rename("upload/".$_FILES["file"]["name"],"upload/".$temp);
                 } 
                 else if (file_exists("rejected/" . $_FILES["file"]["name"])){
                     #TO ADD delete file from rejected
@@ -47,7 +60,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     if ($_POST["submit"] == "Approve"){
         copy ("upload/".$_POST["file"], "approved/".$_POST["file"]);
         unlink ("upload/".$_POST["file"]);
-         echo $_POST["file"]." was approved successfully.";
+        echo $_POST["file"]." was approved successfully.";
     }
     if ($_POST["submit"] == "Reject"){
         copy ("upload/".$_POST["file"], "rejected/".$_POST["file"]);
@@ -55,8 +68,37 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         echo $_POST["file"]." was rejected successfully.";
     }
      if ($_POST["submit"] == "Delete"){
-        unlink($_POST["folder"].$_POST["file"]); 
+        $ext = pathinfo($_POST["file"], PATHINFO_EXTENSION);
+        $temp = $_POST["file"];
+        $temp2 = $_POST["file"];
+        unlink($_POST["folder"].$_POST["file"]); #deletes file
         echo $_POST["file"]." was deleted successfully.";
+        if (substr($temp,-5-strlen($ext), 1) == "(" && substr($temp,-4-strlen($ext), 1) === "V") {
+            $i = (int)substr($temp,-3-strlen($ext), 1); #we get number of the version of the file we deleted
+            $temp = str_replace("_(V".$i.").".$ext, "", $temp); 
+            $i += 1;
+            $temp = $temp."_(V".$i.").".$ext; #we increment the version by 1
+            while (True) {
+                if (file_exists("approved/".$temp)) { #if incremented version exists, decrements its version as previous version no longer exists  
+                    rename("approved/".$temp, "approved/".$temp2);
+                    $temp2 = $temp; #we use temp2 to keep track of the name of previous version
+                    $temp = str_replace("_(V".$i.").".$ext, "", $temp);
+                    $i += 1;
+                    $temp = $temp."_(V".$i.").".$ext; #temp increments version
+                }
+                elseif (file_exists("upload/".$temp)) {
+                    rename("upload/".$temp, "upload/".$temp2);
+                    $temp2 = $temp; #we use temp2 to keep track of the name of previous version
+                    $temp = str_replace("_(V".$i.").".$ext, "", $temp);
+                    $i += 1;
+                    $temp = $temp."_(V".$i.").".$ext; #temp increments version
+
+                }
+                else {
+                    break;
+                }
+            }
+        }
     }
 
 
