@@ -1,4 +1,4 @@
-studentid,surname,firstname,firstname2,tutor,course,year,email,group
+studentID,surname,firstname,firstname2,tutor,course,year,email,group
 c1673242,Davies,Joshua,,K. Sidorov,G100,2,abc@eg.com,
 c1000000,Smith,John,,K.Sidorov,G101,4,def@eg.com,
 c2000000,Sean,Tomm,,K.Sidorov ,G100,2,test,

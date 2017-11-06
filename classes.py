@@ -16,7 +16,7 @@ class Student:
 
 	def __init__(self, studentID, surname, firstname, firstname2, tutor, course, year, email, group): # Create a student
 
-		self.ID = studentID
+		self.studentID = studentID
 		self.surname = surname
 
 		# Combines firstname and firstname2 if there is a firstname2 entered
@@ -41,11 +41,11 @@ class Student:
 		self.group.members.remove(self)
 
 	def studentdata(self):
-		return self.firstname , self.surname, self.ID, self.tutor, self.course, self.year, "GROUP: ", self.group
+		return self.firstname , self.surname, self.studentID, self.tutor, self.course, self.year, "GROUP: ", self.group
 
 	# Functions to retrieve data
-	def getID(self):
-		return(self.ID)
+	def getStudentID(self):
+		return(self.studentID)
 	def getFirstname(self):
 		return(self.firstname)
 	def getSurname(self):

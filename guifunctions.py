@@ -98,7 +98,7 @@ def outputcsv(): # Function called on button press to export all sorted data to 
 	global Students
 
 	f = open("output.csv","w") # w specifies we want to write to file
-	f.write("studentID, surname, firstname, firstname2, tutor, course, year, email, group\n")
+	f.write("studentID,surname,firstname,firstname2,tutor,course,year,email,group\n")
 	for x in Students:
 		f.write(str(x.studentID) + "," +  str(x.surname) + "," +  str(x.firstname) + "," 
 		+  str(x.firstname2) + "," +  str(x.tutor) + "," +  str(x.course) + "," +  str(x.year) 
