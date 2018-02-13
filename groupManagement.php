@@ -1,4 +1,6 @@
 <?php
+//This program uses arrays of student/tutor objects throughout, the classes of which are below.
+
 
 class student {
 
