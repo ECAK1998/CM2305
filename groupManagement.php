@@ -1,9 +1,6 @@
 <?php
 //This program uses arrays of student/tutor objects throughout, the classes of which are below.
-
-
 class student {
-
 	var $studentID;
 	var $surname;
 	var $firstname;
@@ -12,7 +9,6 @@ class student {
 	var $year;
 	var $email;
 	var $group;
-
 	function __construct($studentArray) {
 		$this->studentID = $studentArray["studentID"];
 		$this->surname = $studentArray["surname"];
@@ -23,12 +19,9 @@ class student {
 		$this->email = $studentArray["email"];
 		$this->group = $studentArray["group"];
 	}
-
 	function displayStudent() {
 		//Displays all elements of a student
-
 		echo $this->studentID;
-		echo $this->surname;
 		echo $this->firstname;
 		echo $this->tutor;
 		echo $this->course;
@@ -36,10 +29,8 @@ class student {
 		echo $this->email;
 		echo $this->group;
 	}
-
 	function setGroup($newGroup) {
 		//Manually assigns a group number
-
 		$this->group = $newGroup;
 	}
 
@@ -66,24 +57,19 @@ class student {
 		return $this->group;
 	}
 }
-
 class tutor {
-
 	var $tutorID;
 	var $surname;
 	var $firstname;
 	var $groupNum;
-
 	function __construct($tutorArray) {
 		$this->tutorID = $studentArray["tutorID"];
 		$this->surname = $studentArray["surname"];
 		$this->firstname = $studentArray["firstname"];
 		$this->groupNum = $studentArray["groupNum"];
 	}
-
 	function displayTutor() {
 		//Displays all elements of a tutor
-
 		echo $this->tutorID;
 		echo $this->surname;
 		echo $this->firstname;
@@ -101,11 +87,8 @@ class tutor {
 		return $this->groupNum;
 	}
 }
-
-
 function readStudents($fName) {
 	//Reads in from a formatted CSV student file and produces an array of student objects
-
 	$row = 1;
 	$student = array(
     	"studentID" => "",
@@ -131,10 +114,8 @@ function readStudents($fName) {
 	}
 	return $students;
 }
-
 function readTutors($fName) {
 	//Reads in from a formatted CSV tutor file and produces an array of tutor objects
-
 	$row = 1;
 	$tutor = array(
     	"tutorID" => "",
@@ -156,10 +137,8 @@ function readTutors($fName) {
 	}
 	return $tutors;
 }
-
 function createStudentArray($studentID, $surname, $firstname, $tutor, $course, $year, $email, $group) {
 	//Creates an individual student array
-
 	$student = array(
     	"studentID" => $studentID,
 	    "surname" => $surname,
@@ -172,19 +151,16 @@ function createStudentArray($studentID, $surname, $firstname, $tutor, $course, $
 	);
 	return $student;
 }
-
-function addNewStudent($studentArray) {
+function addNewStudent($students, $studentArray) {
 	//Adds a new student to the list
-
 	$student = new student($studentArray);
 	array_push($students, $student);
+	return $students;
 }
-
 function createGroups($students, $numGroups) {
 	//assigns the students to their groups
 	//currently random but more functionality can be added at a later date
 	//this in very badly done so it needs to be relooked at, however I'm pretty sure its working
-
 	$numStudents = count($students);
 	$studentsPerGroup = floor($numStudents / $numGroups);
 	shuffle($students);
@@ -198,27 +174,22 @@ function createGroups($students, $numGroups) {
 		$students[$i].setGroup($count);
 		$count++;
 	}
+	return $students;
 }
-
 function displayStudents($students) {
 	//Displays information of all students in the list
-
 	foreach ($students as &$value) {
 		$value.displayStudent();
 	}	
 }
-
 function dispalyTutors($tutors) {
 	//Displays information of all tutors in the list
-
 	foreach ($tutors as &$value) {
 		$value.displayTutor();
 	}	
 }
-
 function searchByID($students, $ID) {
 	//Searches the student list for a student with a specified ID and returns it's index in the list or -1 for not found
-
 	$i = 0;
 	foreach ($students as &$value) {
 		if ($value.getID() == $ID) {
@@ -228,11 +199,9 @@ function searchByID($students, $ID) {
 	}
 	return -1;
 }
-
 function searchByName($students, $name) {
 	//Searches the student list for a student with a specified name and returns it's index in the list or -1 for not found
 	//Will probably want to change this search function to 'contains' later instead of an exact match
-
 	$i = 0;
 	foreach ($students as &$value) {
 		if ($value.getName() == $name) {
@@ -242,10 +211,8 @@ function searchByName($students, $name) {
 	}
 	return -1;
 }
-
 function setGroupByIndex($students, $studentIndex, $group) {
 	//Set the group of an individual student by their index in the list
-
 	if ($studentIndex !== -1) {
 		$students[$studentIndex].setGroup($group);
 	} else {
@@ -253,25 +220,15 @@ function setGroupByIndex($students, $studentIndex, $group) {
 	}
 	return $students;
 }
-
 function deleteStudentByIndex($students, $studentIndex) {
 	//Delete an individual student by their index in the list
-
 	array_splice($students, $studentIndex, 1);
 	return $students;
 }
-
 function updateStudentDatabase($students) {
 	//I'm not great at database code with PHP and I'm not 100% sure on the database architecture, so someone on the database team can use what I have made so far to communicate with the database
 }
-
 function updateTutorDatabase($tutors) {
-
 }
 
 ?>
-
-
-
-
-
