@@ -9,6 +9,7 @@ class student {
 	var $year;
 	var $email;
 	var $group;
+
 	function __construct($studentArray) {
 		$this->studentID = $studentArray["studentID"];
 		$this->surname = $studentArray["surname"];
@@ -33,7 +34,6 @@ class student {
 		//Manually assigns a group number
 		$this->group = $newGroup;
 	}
-
 	//Getters for individual elements
 	function getID() {
 		return $this->studentID;
@@ -75,7 +75,6 @@ class tutor {
 		echo $this->firstname;
 		echo $this->groupNum;
 	}
-
 	//Getters for individual elements
 	function getID() {
 		return $this->tutorID;
@@ -151,11 +150,31 @@ function createStudentArray($studentID, $surname, $firstname, $tutor, $course, $
 	);
 	return $student;
 }
+function createTutorArray($tutorID, $surname, $firstname, $groupNum) {
+	//Creates an individual tutor array
+	$student = array(
+    	"tutorID" => $tutorID,
+	    "surname" => $surname,
+	    "firstname" => $firstname,
+	    "tutor" => $tutor,
+	    "course" => $course,
+	    "year" => $year,
+	    "email" => $email,
+	    "group" => $group
+	);
+	return $student;
+}
 function addNewStudent($students, $studentArray) {
 	//Adds a new student to the list
 	$student = new student($studentArray);
 	array_push($students, $student);
 	return $students;
+}
+function addNewTutor($tutors, $tutorArray) {
+	//Adds a new tutor to the list
+	$tutor = new tutor($tutorArray);
+	array_push($tutors, $tutor);
+	return $tutors;
 }
 function createGroups($students, $numGroups) {
 	//assigns the students to their groups
@@ -188,10 +207,10 @@ function dispalyTutors($tutors) {
 		$value.displayTutor();
 	}	
 }
-function searchByID($students, $ID) {
-	//Searches the student list for a student with a specified ID and returns it's index in the list or -1 for not found
+function searchByID($aList, $ID) {
+	//Searches the student or tutor list for a student/tutor with a specified ID and returns it's index in the list or -1 for not found
 	$i = 0;
-	foreach ($students as &$value) {
+	foreach ($aList as &$value) {
 		if ($value.getID() == $ID) {
 			return $i;
 		}
@@ -199,12 +218,11 @@ function searchByID($students, $ID) {
 	}
 	return -1;
 }
-function searchByName($students, $name) {
-	//Searches the student list for a student with a specified name and returns it's index in the list or -1 for not found
-	//Will probably want to change this search function to 'contains' later instead of an exact match
+function searchByName($aList, $name) {
+	//Searches the student list for a student or tutor with a specified name and returns it's index in the list or -1 for not found
 	$i = 0;
-	foreach ($students as &$value) {
-		if ($value.getName() == $name) {
+	foreach ($aList as &$value) {
+		if (strpos($name, $value.getName()) !== false ) {
 			return $i;
 		}
 		$i++;
@@ -225,10 +243,14 @@ function deleteStudentByIndex($students, $studentIndex) {
 	array_splice($students, $studentIndex, 1);
 	return $students;
 }
+function deleteTutorByIndex($tutors, $tutorIndex) {
+	//Delete an individual tutors by their index in the list
+	array_splice($tutors, $tutorIndex, 1);
+	return $tutors;
+}
 function updateStudentDatabase($students) {
 	//I'm not great at database code with PHP and I'm not 100% sure on the database architecture, so someone on the database team can use what I have made so far to communicate with the database
 }
 function updateTutorDatabase($tutors) {
 }
-
 ?>
