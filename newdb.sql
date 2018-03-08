@@ -1,10 +1,4 @@
 
-/*
-Username: group10.2017
-Password: vRfSPZW9NN7nek
-Host: csmysql.cs.cf.ac.uk
-Database name: group10_2017
-*/
 
 CREATE TABLE Users (
     UserID varchar(15),
