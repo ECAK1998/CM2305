@@ -1,3 +1,5 @@
+Run groupManagement.php
+
 This is how I imagine the program working:
 Area to upload student and tutor csv files. Once the files have been uploaded they need to be checked to ensure they are formatted correctly. If they are formatted correctly, they can be uploaded to the database. There should then be a button to that will group the students and relay the grouped data to the user below the buttons. Once grouped, there should be additional functionality to add/move/remove individual students (database should be updated after each change).
 
