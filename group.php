@@ -1,14 +1,14 @@
 <?php
 //This program uses arrays of student/tutor objects throughout, the classes of which are below.
 class student {
-	var $studentID;
-	var $surname;
-	var $firstname;
-	var $tutor;
-	var $course;
-	var $year;
-	var $email;
-	var $group;
+	public $studentID;
+	public $surname;
+	public $firstname;
+	public $tutor;
+	public $course;
+	public $year;
+	public $email;
+	public $group;
 
 	function __construct($studentArray) {
 		$this->studentID = $studentArray["studentID"];
@@ -58,10 +58,11 @@ class student {
 	}
 }
 class tutor {
-	var $tutorID;
-	var $surname;
-	var $firstname;
-	var $groupNum;
+	public $tutorID;
+	public $surname;
+	public $firstname;
+	public $groupNum;
+
 	function __construct($tutorArray) {
 		$this->tutorID = $studentArray["tutorID"];
 		$this->surname = $studentArray["surname"];
@@ -178,34 +179,32 @@ function addNewTutor($tutors, $tutorArray) {
 }
 function createGroups($students, $numGroups) {
 	//assigns the students to their groups
-	//currently random but more functionality can be added at a later date
-	//this in very badly done so it needs to be relooked at, however I'm pretty sure its working
-	$numStudents = count($students);
-	$studentsPerGroup = floor($numStudents / $numGroups);
+	//currently random but more functionality can be added at a later date, improvements should be made
 	shuffle($students);
-	for ($i = 0; $i < $numGroups; $i++) {
-		for ($j = 0; $j < $studentsPerGroup; $j++) {
-			($students[($i * $studentsPerGroup) + $j]).setGroup($i + 1);
-		}
-	}
 	$count = 1;
-	for ($i = ($i * $studentsPerGroup) + $j + 1; $i < $numStudents; $i++) {
-		$students[$i].setGroup($count);
-		$count++;
+	foreach ($students as &$student) {
+		if ($count > $numGroups) {
+			$count = 1;
+		}
+		$student.setGroup($count);
+		$count += 1;
 	}
+	unset($student);
 	return $students;
 }
 function displayStudents($students) {
 	//Displays information of all students in the list
-	foreach ($students as &$value) {
+	foreach ($students as &$student) {
 		$value.displayStudent();
-	}	
+	}
+	unset($student);
 }
 function dispalyTutors($tutors) {
 	//Displays information of all tutors in the list
-	foreach ($tutors as &$value) {
+	foreach ($tutors as &$tutor) {
 		$value.displayTutor();
-	}	
+	}
+	unset($tutor);
 }
 function searchByID($aList, $ID) {
 	//Searches the student or tutor list for a student/tutor with a specified ID and returns it's index in the list or -1 for not found
@@ -216,6 +215,7 @@ function searchByID($aList, $ID) {
 		}
 		$i++;
 	}
+	unset($value);
 	return -1;
 }
 function searchByName($aList, $name) {
@@ -227,6 +227,7 @@ function searchByName($aList, $name) {
 		}
 		$i++;
 	}
+	unset($value);
 	return -1;
 }
 function setGroupByIndex($students, $studentIndex, $group) {
