@@ -1,14 +1,14 @@
 <?php
 //This program uses arrays of student/tutor objects throughout, the classes of which are below.
 class student {
-	public $studentID;
-	public $surname;
-	public $firstname;
-	public $tutor;
-	public $course;
-	public $year;
-	public $email;
-	public $group;
+	var $studentID;
+	var $surname;
+	var $firstname;
+	var $tutor;
+	var $course;
+	var $year;
+	var $email;
+	var $group;
 
 	function __construct($studentArray) {
 		$this->studentID = $studentArray["studentID"];
@@ -58,16 +58,15 @@ class student {
 	}
 }
 class tutor {
-	public $tutorID;
-	public $surname;
-	public $firstname;
-	public $groupNum;
-
+	var $tutorID;
+	var $surname;
+	var $firstname;
+	var $groupNum;
 	function __construct($tutorArray) {
-		$this->tutorID = $studentArray["tutorID"];
-		$this->surname = $studentArray["surname"];
-		$this->firstname = $studentArray["firstname"];
-		$this->groupNum = $studentArray["groupNum"];
+		$this->tutorID = $tutorArray["tutorID"];
+		$this->surname = $tutorArray["surname"];
+		$this->firstname = $tutorArray["firstname"];
+		$this->groupNum = $tutorArray["groupNum"];
 	}
 	function displayTutor() {
 		//Displays all elements of a tutor
@@ -106,7 +105,7 @@ function readStudents($fName) {
 	        $num = count($data);
 	        $row++;
 	        for ($c = 0; $c < $num; $c++) {
-	            $student[i] = $data[$c];
+	            $student[$c] = $data[$c];
 	        }
 	        array_push($students, new student($student));
 	    }
@@ -129,7 +128,7 @@ function readTutors($fName) {
 	        $num = count($data);
 	        $row++;
 	        for ($c = 0; $c < $num; $c++) {
-	            $tutor[i] = $data[$c];
+	            $tutor[$c] = $data[$c];
 	        }
 	        array_push($tutors, new tutor($tutor));
 	    }
@@ -179,61 +178,61 @@ function addNewTutor($tutors, $tutorArray) {
 }
 function createGroups($students, $numGroups) {
 	//assigns the students to their groups
-	//currently random but more functionality can be added at a later date, improvements should be made
+	//currently random but more functionality can be added at a later date
+	//this in very badly done so it needs to be relooked at, however I'm pretty sure its working
+	$numStudents = count($students);
+	$studentsPerGroup = floor($numStudents / $numGroups);
 	shuffle($students);
-	$count = 1;
-	foreach ($students as &$student) {
-		if ($count > $numGroups) {
-			$count = 1;
+	for ($i = 0; $i < $numGroups; $i++) {
+		for ($j = 0; $j < $studentsPerGroup; $j++) {
+			$students[($i * $studentsPerGroup) + $j]->setGroup($i + 1);
 		}
-		$student.setGroup($count);
-		$count += 1;
 	}
-	unset($student);
+	$count = 1;
+	for ($i = ($i * $studentsPerGroup) + $j + 1; $i < $numStudents; $i++) {
+		$students[$i]->setGroup($count);
+		$count++;
+	}
 	return $students;
 }
 function displayStudents($students) {
 	//Displays information of all students in the list
-	foreach ($students as &$student) {
-		$value.displayStudent();
-	}
-	unset($student);
+	foreach ($students as &$value) {
+		$value->displayStudent();
+	}	
 }
 function dispalyTutors($tutors) {
 	//Displays information of all tutors in the list
-	foreach ($tutors as &$tutor) {
-		$value.displayTutor();
-	}
-	unset($tutor);
+	foreach ($tutors as &$value) {
+		$value->displayTutor();
+	}	
 }
 function searchByID($aList, $ID) {
 	//Searches the student or tutor list for a student/tutor with a specified ID and returns it's index in the list or -1 for not found
 	$i = 0;
 	foreach ($aList as &$value) {
-		if ($value.getID() == $ID) {
+		if ($value->getID() == $ID) {
 			return $i;
 		}
 		$i++;
 	}
-	unset($value);
 	return -1;
 }
 function searchByName($aList, $name) {
 	//Searches the student list for a student or tutor with a specified name and returns it's index in the list or -1 for not found
 	$i = 0;
 	foreach ($aList as &$value) {
-		if (strpos($name, $value.getName()) !== false ) {
+		if (strpos($name, $value->getName()) !== false ) {
 			return $i;
 		}
 		$i++;
 	}
-	unset($value);
 	return -1;
 }
 function setGroupByIndex($students, $studentIndex, $group) {
 	//Set the group of an individual student by their index in the list
 	if ($studentIndex !== -1) {
-		$students[$studentIndex].setGroup($group);
+		$students[$studentIndex]->setGroup($group);
 	} else {
 		echo "error";
 	}
