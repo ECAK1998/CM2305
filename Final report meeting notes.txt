@@ -1,0 +1,33 @@
+=========================================================================
+								HCI
+=========================================================================
+Sandstorm.io - Robin, Will
+	Evaluate 2 states for this side of the system
+File upload system - Ethan, Ellis
+User interface (Main menu/Student Main?)-Chloe, Sean
+As a group: Summary report : good/bad, solutions to problems
+
+========================================================================
+							GROUP PROJECT
+=========================================================================
+Intro - Chloe
+	=Explain problem in brief
+	=Why there is a problem
+	=What is report about?
+	=1 small para
+Background - Chloe/Robin/Ellis
+	=Sandstorm
+	=Other Products
+		=Advantages
+		=Disadvantages
+Approach - Chloe/Sean/Will
+	=Overview in general
+		=implementation
+Testing and Results - Chloe/Ethan/Tommo
+	=Data
+		=Quantifiable
+		=Ease of Use
+		=Issues
+Future
+	=Next step
+Conclusion
