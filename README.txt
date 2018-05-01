@@ -28,3 +28,7 @@ Area to upload student and tutor csv files. Once the files have been uploaded th
 	Next you can click the group button to group the students; the two empty files in the upload folder will now be populated.
 	Hopefully from here it will be very easy to simply read the csv files into the database.
 	I'm going to try to work on the additional functionality tonight.
+
+01/05/2018 - Ethan:
+	> Small correction: studentFile.csv and tutorFile.csv are needed for input; 'formatted' files are the output (correction to the README.txt I've not changed the actual program)
+	> Group is set correctly, although the 'tutor' field for student is changed to the tutor which leads the group they are assigned to as opposed to their personal tutor. Was this intentional? I probably should have made that clearer when defining the necessary fields. However the databse is bound to be restructured multiple times during development and these small changes would be corrected if we had more time to spend on this. Gppd job getting this working.
