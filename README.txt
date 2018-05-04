@@ -32,3 +32,8 @@ Area to upload student and tutor csv files. Once the files have been uploaded th
 01/05/2018 - Ethan:
 	> Small correction: studentFile.csv and tutorFile.csv are needed for input; 'formatted' files are the output (correction to the README.txt I've not changed the actual program)
 	> Group is set correctly, although the 'tutor' field for student is changed to the tutor which leads the group they are assigned to as opposed to their personal tutor. Was this intentional? I probably should have made that clearer when defining the necessary fields. However the databse is bound to be restructured multiple times during development and these small changes would be corrected if we had more time to spend on this. Gppd job getting this working.
+	
+04/05/2018 - Sean:
+	Restructured some of the code for reading/writing files and grouping students in order to be more efficient and logical in structure - will explain this to you at the group meeting if necessary.
+	Can now delete individual students by name/ID
+	All code is complete for adding individual students however the POST method does not seem to run, will try to iron this out before the presentation!
