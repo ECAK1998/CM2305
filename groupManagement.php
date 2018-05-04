@@ -4,17 +4,21 @@
 
 <meta charset="utf-8">
 <link rel="stylesheet" href="style.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <title>Grouping Tool</title>
 
 </head>
 <body>
 
 <h1>Grouping Tool</h1>
-    
-    <form method="post" enctype="multipart/form-data">
-    	Select file to upload:
-    	<input type="file" accept=".csv" name="fileToUpload" id="fileToUpload"/>
-    	<input type="submit" name="upload" id="upload" value="Upload"/>
+
+	<form method="post" enctype="multipart/form-data" class="import-block">
+    	Select student file to import:
+    	<input type="file" accept=".csv" name="studentFileToImport" id="studentFileToImport"/>
+    	<br>
+    	Select tutor file to import:
+    	<input type="file" accept=".csv" name="tutorFileToImport" id="tutorFileToImport"/>
+    	<input type="submit" name="importFiles" id="importFiles" value="Import Files" disabled/>
 	</form>
 
 	<br>
@@ -23,10 +27,57 @@
 		<input type="submit" name="group" id="group" value="Group Students"/>
 	</form>
 
+	<br>
+	<br>
+
+	<form method="post" enctype="multipart/form-data">
+		Delete Student By ID:
+		<input type="text" name="searchID" placeholder="Student ID"/>
+		<input type="submit" name="deleteID" id="deleteID" value="Delete"/>
+	</form>
+
+	<br>
+	<br>
+
+	<form method="post" enctype="multipart/form-data">
+		Delete Student By Name:
+		<input type="text" name="searchName" placeholder="Student Name"/>
+		<input type="submit" name="deleteName" id="deleteName" value="Delete"/>
+	</form>
+
+	<br>
+	<br>
+
+	<form method="post" enctype="multipart/form-data">
+		Add New Student:
+		<input type="text" name="studentID" placeholder="Student ID"/>
+		<input type="text" name="firstname" placeholder="Firstname"/>
+		<input type="text" name="surname" placeholder="Surname"/>
+		<input type="text" name="tutorID" placeholder="Tutor ID"/>
+		<input type="text" name="courseID" placeholder="Course ID"/>
+		<input type="text" name="year" placeholder="Year"/>
+		<input type="text" name="email" placeholder="Email Address"/>
+		<input type="text" name="group" placeholder="Group Number"/>
+		<input type="submit" name="addStudent" id="addStudent" value="Add Student"/>
+	</form>
+
+	<br>
+
+	<script>
+	$('.import-block input').change(function() {
+    	$('#importFiles').prop('disabled', !($('#studentFileToImport').val() && $('#tutorFileToImport').val()));
+  	});
+	</script>
+
 </body>
 </html>
 
 <?php
+$students = array();
+$tutors = array();
+$studentFileName = "";
+$tutorFileName = "";
+
 //This program uses arrays of student/tutor objects throughout, the classes of which are below.
 class student {
 	var $ID;
@@ -152,6 +203,7 @@ function createGroups($students, $tutors, $numGroups) {
 		$count += 1;
 	}
 	unset($student);
+
 	return $students;
 }
 function displayStudents($students) {
@@ -201,17 +253,19 @@ function searchByID($aList, $ID) {
 		$i++;
 	}
 	unset($value);
+
 	return -1;
 }
 function searchByName($aList, $name) {
 	//Searches the student list for a student or tutor with a specified name and returns it's index in the list or -1 for not found
 	$i = 0;
 	foreach ($aList as &$value) {
-		if (strpos($name, ($value->firstname . " " . $value->surname)) !== false ) {
+		if (stripos($name, ($value->firstname . " " . $value->surname)) !== false) {
 			return $i;
 		}
 		$i++;
 	}
+
 	return -1;
 }
 function setGroupByIndex($students, $studentIndex, $group) {
@@ -221,74 +275,116 @@ function setGroupByIndex($students, $studentIndex, $group) {
 	} else {
 		echo "error";
 	}
+
 	return $students;
 }
 function deleteStudentByIndex($students, $studentIndex) {
 	//Delete an individual student by their index in the list
-	array_splice($students, $studentIndex, 1);
+	unset($students[$studentIndex]);
 	return $students;
 }
 function deleteTutorByIndex($tutors, $tutorIndex) {
 	//Delete an individual tutors by their index in the list
-	array_splice($tutors, $tutorIndex, 1);
+	unset($tutors[$tutorIndex]);
 	return $tutors;
 }
 function writeToFile($fileName, $data) {
 	file_put_contents($fileName, "");
-	$fp = fopen($fileName, 'w');
+	$fp = fopen($fileName, "w");
 
 	foreach ($data as $line) {
     	fputcsv($fp, $line);
 	}
-
 	fclose($fp);
 }
-function groupStudents($studentFile, $tutorFile) {
-	$students = array();
-	$studentData = array();
-	$tutors = array();
-	$tutorData = array();
-	$students = readStudents($studentFile);
-	$tutors = readTutors($tutorFile);
+function uploadFile($fileID) {
+	$target_dir = "uploads/";
+	$target_file = $target_dir . basename($_FILES[$fileID]["name"]);
+	$fileType = pathinfo($target_file, PATHINFO_EXTENSION);
 
-	$students = createGroups($students, $tutors, count($tutors));
+	// Allow certain file formats
+	if($fileType != "csv") {
+    	echo "Sorry, only CSV files are allowed.";
+	}
+	else {
+    	if (move_uploaded_file($_FILES[$fileID]["tmp_name"], $target_file)) {
+    	    echo "The file " . basename($_FILES[$fileID]["name"]) . " has been imported.<br>";
+
+    	} else {
+    	    echo "Sorry, there was an error importing your file: " . $fileID;
+    	}
+	}
+}
+function studentToOutput($students) {
+	$studentData = array();
 	$count = 0;
 	foreach ($students as $student) {
 		$studentData[$count] = array($student->ID, $student->surname, $student->firstname, $student->tutor, $student->course, $student->year, $student->email, $student->group);
 		$count += 1;
 	}
+	return $studentData;
+}
+function tutorToOutput($tutors) {
+	$tutorData = array();
 	$count = 0;
 	foreach ($tutors as $tutor) {
 		$tutorData[$count] = array($tutor->ID, $tutor->surname, $tutor->firstname, $tutor->groupNum);
 		$count += 1;
 	}
-
-	writeToFile("uploads/formattedStudents.csv", $studentData);
-	writeToFile("uploads/formattedTutors.csv", $tutorData);
-
-	echo "Students have been grouped";
-}
-function uploadFile() {
-	$target_dir = "uploads/";
-	$target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
-	$fileType = pathinfo($target_file,PATHINFO_EXTENSION);
-
-	// Allow certain file formats
-	if($fileType != "csv" ) {
-    	echo "Sorry, only CSV files are allowed. ";
-	}
-	else {
-    	if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
-    	    echo "The file ". basename($_FILES["fileToUpload"]["name"]). " has been uploaded.";
-    	} else {
-    	    echo "Sorry, there was an error uploading your file.";
-    	}
-	}
+	return $tutorData;
 }
 
-if(array_key_exists("group", $_POST)){
-	groupStudents("uploads/studentFile.csv", "uploads/tutorFile.csv");
-} elseif(array_key_exists("upload", $_POST)){
-	uploadFile();
+if(array_key_exists("group", $_POST)) {
+	$students = readStudents("uploads/studentFile.csv");
+	$tutors = readTutors("uploads/tutorFile.csv");
+
+	$students = createGroups($students, $tutors, count($tutors));
+
+	$studentData = studentToOutput($students);
+	$tutorData = tutorToOutput($tutors);
+
+	writeToFile("uploads/studentFile.csv", $studentData);
+	writeToFile("uploads/tutorFile.csv", $tutorData);
+
+	echo "Students have been grouped.";
+} elseif(array_key_exists("importFiles", $_POST)) {
+	$studentFileName = $_FILES["studentFileToImport"]["name"];
+	uploadFile("studentFileToImport");
+	$students = readStudents("uploads/" . $studentFileName);
+	$tutorFileName = $_FILES["tutorFileToImport"]["name"];
+	uploadFile("tutorFileToImport");
+	$tutors = readTutors("uploads/" . $tutorFileName);
+} elseif(array_key_exists("deleteID", $_POST)) {
+	$students = readStudents("uploads/studentFile.csv");
+	$index = searchByID($students, $_POST["searchID"]);
+	if($index != -1) {
+		$students = deleteStudentByIndex($students, $index);
+		$studentData = studentToOutput($students);
+		writeToFile("uploads/studentFile.csv", $studentData);
+		echo "Student deleted successfully.";
+	} else {
+		echo "Student " . $_POST["searchID"] . " does not exist.";
+	}
+} elseif(array_key_exists("deleteName", $_POST)) {
+	$students = readStudents("uploads/studentFile.csv");
+	$index = searchByName($students, $_POST["searchName"]);
+	if($index != -1) {
+		$students = deleteStudentByIndex($students, $index);
+		$studentData = studentToOutput($students);
+		writeToFile("uploads/studentFile.csv", $studentData);
+		echo "Student deleted successfully.";
+	} else {
+		echo "Student " . $_POST["searchName"] . " does not exist.";
+	}
+} elseif(array_key_exists("addStudent", $_POST)) {
+	echo "Test";
+	$students = readStudents("uploads/studentFile.csv");
+	displayStudentsSmall($students);
+	$student = createStudentArray($_POST["studentID"], $_POST["surname"], $_POST["firstname"], $_POST["tutorID"], $_POST["courseID"], $_POST["year"], $_POST["email"], $_POST["group"]);
+	echo $student;
+	$students = addNewStudent($students, $student);
+	$studentData = studentToOutput($students);
+	writeToFile("uploads/studentFile.csv", $studentData);
+	echo "Student Added!";
 }
 ?>
