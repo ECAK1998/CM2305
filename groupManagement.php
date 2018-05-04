@@ -377,7 +377,7 @@ if(array_key_exists("group", $_POST)) {
 		echo "Student " . $_POST["searchName"] . " does not exist.";
 	}
 } elseif(array_key_exists("addStudent", $_POST)) {
-	echo "Test";
+	echo "Test"; //DOES NOT EXECUTE! WHY?!?
 	$students = readStudents("uploads/studentFile.csv");
 	displayStudentsSmall($students);
 	$student = createStudentArray($_POST["studentID"], $_POST["surname"], $_POST["firstname"], $_POST["tutorID"], $_POST["courseID"], $_POST["year"], $_POST["email"], $_POST["group"]);
