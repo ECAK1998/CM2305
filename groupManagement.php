@@ -77,7 +77,6 @@ $students = array();
 $tutors = array();
 $studentFileName = "";
 $tutorFileName = "";
-
 //This program uses arrays of student/tutor objects throughout, the classes of which are below.
 class student {
 	var $ID;
@@ -88,7 +87,6 @@ class student {
 	var $year;
 	var $email;
 	var $group;
-
 	function __construct($studentArray) {
 		$this->ID = $studentArray[0];
 		$this->surname = $studentArray[1];
@@ -105,7 +103,6 @@ class tutor {
 	var $surname;
 	var $firstname;
 	var $groupNum;
-
 	function __construct($tutorArray) {
 		$this->ID = $tutorArray[0];
 		$this->surname = $tutorArray[1];
@@ -152,30 +149,26 @@ function readTutors($fName) {
 function createStudentArray($ID, $surname, $firstname, $tutor, $course, $year, $email, $group) {
 	//Creates an individual student array
 	$student = array(
-    	"ID" => $ID,
-	    "surname" => $surname,
-	    "firstname" => $firstname,
-	    "tutor" => $tutor,
-	    "course" => $course,
-	    "year" => $year,
-	    "email" => $email,
-	    "group" => $group
+    	0 => $ID,
+	    1 => $surname,
+	    2 => $firstname,
+	    3 => $tutor,
+	    4 => $course,
+	    5 => $year,
+	    6 => $email,
+	    7 => $group
 	);
 	return $student;
 }
 function createTutorArray($ID, $surname, $firstname, $groupNum) {
 	//Creates an individual tutor array
 	$student = array(
-    	"ID" => $ID,
-	    "surname" => $surname,
-	    "firstname" => $firstname,
-	    "tutor" => $tutor,
-	    "course" => $course,
-	    "year" => $year,
-	    "email" => $email,
-	    "group" => $group
+    	0 => $ID,
+	    1 => $surname,
+	    2 => $firstname,
+	    3 => $groupNum
 	);
-	return $student;
+	return $tutor;
 }
 function addNewStudent($students, $studentArray) {
 	//Adds a new student to the list
@@ -203,7 +196,6 @@ function createGroups($students, $tutors, $numGroups) {
 		$count += 1;
 	}
 	unset($student);
-
 	return $students;
 }
 function displayStudents($students) {
@@ -253,7 +245,6 @@ function searchByID($aList, $ID) {
 		$i++;
 	}
 	unset($value);
-
 	return -1;
 }
 function searchByName($aList, $name) {
@@ -265,7 +256,6 @@ function searchByName($aList, $name) {
 		}
 		$i++;
 	}
-
 	return -1;
 }
 function setGroupByIndex($students, $studentIndex, $group) {
@@ -275,7 +265,6 @@ function setGroupByIndex($students, $studentIndex, $group) {
 	} else {
 		echo "error";
 	}
-
 	return $students;
 }
 function deleteStudentByIndex($students, $studentIndex) {
@@ -291,7 +280,6 @@ function deleteTutorByIndex($tutors, $tutorIndex) {
 function writeToFile($fileName, $data) {
 	file_put_contents($fileName, "");
 	$fp = fopen($fileName, "w");
-
 	foreach ($data as $line) {
     	fputcsv($fp, $line);
 	}
@@ -301,7 +289,6 @@ function uploadFile($fileID) {
 	$target_dir = "uploads/";
 	$target_file = $target_dir . basename($_FILES[$fileID]["name"]);
 	$fileType = pathinfo($target_file, PATHINFO_EXTENSION);
-
 	// Allow certain file formats
 	if($fileType != "csv") {
     	echo "Sorry, only CSV files are allowed.";
@@ -309,7 +296,6 @@ function uploadFile($fileID) {
 	else {
     	if (move_uploaded_file($_FILES[$fileID]["tmp_name"], $target_file)) {
     	    echo "The file " . basename($_FILES[$fileID]["name"]) . " has been imported.<br>";
-
     	} else {
     	    echo "Sorry, there was an error importing your file: " . $fileID;
     	}
@@ -333,20 +319,15 @@ function tutorToOutput($tutors) {
 	}
 	return $tutorData;
 }
-
-if(array_key_exists("group", $_POST)) {
+if(array_key_exists("addStudent", $_POST)) {
+	$student = array();
+	$students = array();
 	$students = readStudents("uploads/studentFile.csv");
-	$tutors = readTutors("uploads/tutorFile.csv");
-
-	$students = createGroups($students, $tutors, count($tutors));
-
+	$student = createStudentArray($_POST["studentID"], $_POST["surname"], $_POST["firstname"], $_POST["tutorID"], $_POST["courseID"], $_POST["year"], $_POST["email"], $_POST["group"]);
+	$students = addNewStudent($students, $student);
 	$studentData = studentToOutput($students);
-	$tutorData = tutorToOutput($tutors);
-
 	writeToFile("uploads/studentFile.csv", $studentData);
-	writeToFile("uploads/tutorFile.csv", $tutorData);
-
-	echo "Students have been grouped.";
+	echo "Student Added!";
 } elseif(array_key_exists("importFiles", $_POST)) {
 	$studentFileName = $_FILES["studentFileToImport"]["name"];
 	uploadFile("studentFileToImport");
@@ -376,15 +357,14 @@ if(array_key_exists("group", $_POST)) {
 	} else {
 		echo "Student " . $_POST["searchName"] . " does not exist.";
 	}
-} elseif(array_key_exists("addStudent", $_POST)) {
-	echo "Test"; //DOES NOT EXECUTE! WHY?!?
+} elseif(array_key_exists("group", $_POST)) {
 	$students = readStudents("uploads/studentFile.csv");
-	displayStudentsSmall($students);
-	$student = createStudentArray($_POST["studentID"], $_POST["surname"], $_POST["firstname"], $_POST["tutorID"], $_POST["courseID"], $_POST["year"], $_POST["email"], $_POST["group"]);
-	echo $student;
-	$students = addNewStudent($students, $student);
+	$tutors = readTutors("uploads/tutorFile.csv");
+	$students = createGroups($students, $tutors, count($tutors));
 	$studentData = studentToOutput($students);
+	$tutorData = tutorToOutput($tutors);
 	writeToFile("uploads/studentFile.csv", $studentData);
-	echo "Student Added!";
+	writeToFile("uploads/tutorFile.csv", $tutorData);
+	echo "Students have been grouped.";
 }
 ?>
